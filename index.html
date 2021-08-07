@@ -6,12 +6,178 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>大事件首页</title>
+    <link rel="stylesheet" href="/assets/lib/layui/css/layui.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+        }
+        /* 设置头像大小 */
+        
+        .layui-nav-img {
+            width: 40px;
+            height: 40px;
+        }
+        /* 首字母头像 */
+        
+        .text-avatar {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            font-size: 16px;
+            color: #fff;
+            background-color: #009688;
+            border-radius: 20px;
+            margin-right: 10px;
+        }
+        /* 导航栏头像 */
+        
+        .nav-avatar {
+            height: 60px;
+            line-height: 60px;
+            text-align: center;
+            font-size: 12px;
+            /* 禁止被选中 */
+            user-select: none;
+        }
+        /* 设置iframe的宽高 */
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+        }
+        /* 导航栏子项缩进一定距离 */
+        
+        .layui-nav-child {
+            padding-left: 20px;
+        }
+        /* 底部居中 */
+        
+        .layui-footer {
+            text-align: center;
+            font-size: 12px;
+        }
+    </style>
 </head>
 
 <body>
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo"><img src="./assets/images/logo.png" alt=""></div>
+            <!-- 头部区域（可配合layui 已有的水平导航） -->
+
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item layui-hide layui-show-md-inline-block">
+                    <a href="javascript:;">
+                        <img src="./assets/images/sample.jpg" class="layui-nav-img"><span class="text-avatar">A</span> 个人中心
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="">基本资料</a></dd>
+                        <dd><a href="">更换头像</a></dd>
+                        <dd><a href="">重置密码</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
+                    <a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>  退出</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <!-- 导航栏头像 -->
+                <div class="nav-avatar">
+                    <img src="./assets/images/sample.jpg" class="layui-nav-img"><span class="text-avatar">A</span> <span id="welcome">欢迎 ***</span>
+                </div>
+                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+                <!-- lay-shrink="all" 该属性控制展开子菜单时 收缩兄弟菜单 -->
+                <ul class="layui-nav layui-nav-tree" lay-filter="test" lay-shrink="all">
+                    <li class="layui-nav-item layui-this"><a href="./home/dashboard.html" target="fm"><i class="layui-icon layui-icon-home"></i> 首页</a></li>
+                    <li class="layui-nav-item">
+                        <a class="" href="javascript:;"><i class="layui-icon layui-icon-file-b"></i> 文章管理</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i> 文章类别</a></dd>
+                            <dd><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i> 文章管理</a></dd>
+                            <dd><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i> 发布文章</a></dd>
+                        </dl>
+                    </li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;"><i class="layui-icon layui-icon-username"></i> 个人中心</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i> 基本资料</a></dd>
+                            <dd><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i> 更换头像</a></dd>
+                            <dd><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i> 重置密码</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+            <iframe src="./home/dashboard.html" name="fm" frameborder="0"></iframe>
+        </div>
+
+        <div class="layui-footer">
+            <!-- 底部固定区域 -->
+            底部固定区域
+        </div>
+    </div>
+    <script src="./assets/lib/layui/layui.js"></script>
+    <script src="./assets/lib/jquery.js"></script>
     <script>
-        console.log(localStorage.getItem('token'));
+        $(function() {
+            //在每次发起ajax请求之前，会先调用jQ中ajaxPrefilter这个内置函数，这个函数中可以拿到ajax提供的配置对象
+            $.ajaxPrefilter(function(options) {
+                    options.url = 'http://api-breakingnews-web.itheima.net' + options.url
+                })
+                // 调用请求函数
+            getUserInfo();
+        });
+        // 请求数据函数
+        function getUserInfo() {
+            $.ajax({
+                method: 'get',
+                url: '/my/userinfo',
+                //headers 请求头
+                headers: {
+                    // 获取本地存储中的token值
+                    Authorization: localStorage.getItem('token') || ''
+                },
+                success: function(res) {
+                    if (res.status !== 0) {
+                        return layui.layer.msg('获取用户信息失败')
+                    };
+                    // 调用生成字母头像的函数
+                    renderAvatar(res.data);
+                }
+            })
+        }
+        // 生成字母头像的函数
+        function renderAvatar(user) {
+            // 获取用户的名称 优先获取昵称 没有在获取用户名
+            var name = user.nickname || user.username;
+            $('#welcome').html('欢迎 ' + name);
+            if (user.user_pic) { //如果头像的url不为空，则显示头像，隐藏字母头像
+                $('.layui-nav-img').attr('src', user.user_pic).show();
+                $('.text-avatar').hide()
+            } else { //否则隐藏头像 显示字母头像
+                $('.layui-nav-img').hide();
+                var text = name[0].toUpperCase(); //获取名字的第一个字符 如果是字母则转换为大写
+                $('.text-avatar').html(text).show()
+            }
+        }
     </script>
+
 </body>
 
 </html>
