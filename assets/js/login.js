@@ -35,18 +35,20 @@ $(function() {
         ],
         //确认密码验证
         repass: function(value) {
+            //获取注册页面表单有name=password 属性的value值
             let pwd = $('.enroll [name=password]').val();
+            //判断当前表单的值和获取的pwd值是否一致
             if (pwd !== value) {
                 return '两次输入的密码不一致';
             }
         }
     });
     //在每次发起ajax请求之前，会先调用jQ中ajaxPrefilter这个内置函数，这个函数中可以拿到ajax提供的配置对象
-    $.ajaxPrefilter(function(options){
-        // 在发起ajax请求之前 同意拼接url地址 方便后期维护
-     options.url = 'http://api-breakingnews-web.itheima.net'+options.url
-    })
-    //注册表单
+    $.ajaxPrefilter(function(options) {
+            // 在发起ajax请求之前 同意拼接url地址 方便后期维护
+            options.url = 'http://api-breakingnews-web.itheima.net' + options.url
+        })
+        //注册表单
     $('#register').on('submit', function(e) {
         e.preventDefault();
         register($(this).serialize());

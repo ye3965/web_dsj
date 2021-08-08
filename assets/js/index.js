@@ -47,7 +47,6 @@ function getUserInfo() {
         },
         //无论请求成功或失败 都会执行complete函数
         complete: function(res) {
-            console.log(res.responseJSON.status);
             if (res.responseJSON.status !== 0) {
                 //清空本地存储中 token的值
                 localStorage.removeItem('token');
