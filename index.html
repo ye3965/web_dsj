@@ -7,66 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>大事件首页</title>
     <link rel="stylesheet" href="/assets/lib/layui/css/layui.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body,
-        html {
-            width: 100%;
-            height: 100%;
-        }
-        /* 设置头像大小 */
-        
-        .layui-nav-img {
-            width: 40px;
-            height: 40px;
-        }
-        /* 首字母头像 */
-        
-        .text-avatar {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
-            text-align: center;
-            font-size: 16px;
-            color: #fff;
-            background-color: #009688;
-            border-radius: 20px;
-            margin-right: 10px;
-        }
-        /* 导航栏头像 */
-        
-        .nav-avatar {
-            height: 60px;
-            line-height: 60px;
-            text-align: center;
-            font-size: 12px;
-            /* 禁止被选中 */
-            user-select: none;
-        }
-        /* 设置iframe的宽高 */
-        
-        iframe {
-            width: 100%;
-            height: 100%;
-        }
-        /* 导航栏子项缩进一定距离 */
-        
-        .layui-nav-child {
-            padding-left: 20px;
-        }
-        /* 底部居中 */
-        
-        .layui-footer {
-            text-align: center;
-            font-size: 12px;
-        }
-    </style>
+    <link rel="stylesheet" href="./assets/css/index.css">
 </head>
 
 <body>
@@ -87,7 +28,7 @@
                     </dl>
                 </li>
                 <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
-                    <a href="javascript:;"><i class="layui-icon layui-icon-logout"></i>  退出</a>
+                    <a href="javascript:;" id="exit"><i class="layui-icon layui-icon-logout"></i>  退出</a>
                 </li>
             </ul>
         </div>
@@ -105,17 +46,17 @@
                     <li class="layui-nav-item">
                         <a class="" href="javascript:;"><i class="layui-icon layui-icon-file-b"></i> 文章管理</a>
                         <dl class="layui-nav-child">
-                            <dd><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i> 文章类别</a></dd>
-                            <dd><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i> 文章管理</a></dd>
-                            <dd><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i> 发布文章</a></dd>
+                            <dd><a href="javascript:;"><i class="layui-icon layui-icon-form"></i> 文章类别</a></dd>
+                            <dd><a href="javascript:;"><i class="layui-icon layui-icon-util"></i> 文章管理</a></dd>
+                            <dd><a href="javascript:;"><i class="layui-icon layui-icon-export"></i> 发布文章</a></dd>
                         </dl>
                     </li>
                     <li class="layui-nav-item">
                         <a href="javascript:;"><i class="layui-icon layui-icon-username"></i> 个人中心</a>
                         <dl class="layui-nav-child">
-                            <dd><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i> 基本资料</a></dd>
-                            <dd><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i> 更换头像</a></dd>
-                            <dd><a href="javascript:;"><i class="layui-icon layui-icon-logout"></i> 重置密码</a></dd>
+                            <dd><a href="javascript:;"><i class="layui-icon layui-icon-friends"></i> 基本资料</a></dd>
+                            <dd><a href="javascript:;"><i class="layui-icon layui-icon-camera"></i> 更换头像</a></dd>
+                            <dd><a href="javascript:;"><i class="layui-icon layui-icon-password"></i> 重置密码</a></dd>
                         </dl>
                     </li>
                 </ul>
@@ -134,49 +75,7 @@
     </div>
     <script src="./assets/lib/layui/layui.js"></script>
     <script src="./assets/lib/jquery.js"></script>
-    <script>
-        $(function() {
-            //在每次发起ajax请求之前，会先调用jQ中ajaxPrefilter这个内置函数，这个函数中可以拿到ajax提供的配置对象
-            $.ajaxPrefilter(function(options) {
-                    options.url = 'http://api-breakingnews-web.itheima.net' + options.url
-                })
-                // 调用请求函数
-            getUserInfo();
-        });
-        // 请求数据函数
-        function getUserInfo() {
-            $.ajax({
-                method: 'get',
-                url: '/my/userinfo',
-                //headers 请求头
-                headers: {
-                    // 获取本地存储中的token值
-                    Authorization: localStorage.getItem('token') || ''
-                },
-                success: function(res) {
-                    if (res.status !== 0) {
-                        return layui.layer.msg('获取用户信息失败')
-                    };
-                    // 调用生成字母头像的函数
-                    renderAvatar(res.data);
-                }
-            })
-        }
-        // 生成字母头像的函数
-        function renderAvatar(user) {
-            // 获取用户的名称 优先获取昵称 没有在获取用户名
-            var name = user.nickname || user.username;
-            $('#welcome').html('欢迎 ' + name);
-            if (user.user_pic) { //如果头像的url不为空，则显示头像，隐藏字母头像
-                $('.layui-nav-img').attr('src', user.user_pic).show();
-                $('.text-avatar').hide()
-            } else { //否则隐藏头像 显示字母头像
-                $('.layui-nav-img').hide();
-                var text = name[0].toUpperCase(); //获取名字的第一个字符 如果是字母则转换为大写
-                $('.text-avatar').html(text).show()
-            }
-        }
-    </script>
+    <script src="./assets/js/index.js"></script>
 
 </body>
 

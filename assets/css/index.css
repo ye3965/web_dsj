@@ -1,0 +1,58 @@
+  * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+  }
+  
+  body,
+  html {
+      width: 100%;
+      height: 100%;
+  }
+  /* 设置头像大小 */
+  
+  .layui-nav-img {
+      width: 40px;
+      height: 40px;
+  }
+  /* 首字母头像 */
+  
+  .text-avatar {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      font-size: 16px;
+      color: #fff;
+      background-color: #009688;
+      border-radius: 20px;
+      margin-right: 10px;
+  }
+  /* 导航栏头像 */
+  
+  .nav-avatar {
+      height: 60px;
+      line-height: 60px;
+      text-align: center;
+      font-size: 12px;
+      /* 禁止被选中 */
+      user-select: none;
+  }
+  /* 设置iframe的宽高 */
+  
+  iframe {
+      width: 100%;
+      height: 100%;
+  }
+  /* 导航栏子项缩进一定距离 */
+  
+  .layui-nav-child {
+      padding-left: 20px;
+  }
+  /* 底部居中 */
+  
+  .layui-footer {
+      text-align: center;
+      font-size: 12px;
+  }
