@@ -1,0 +1,24 @@
+   /* 设置头部元素的排列方式 */
+   
+   .layui-card-header {
+       display: flex;
+       /* 两边对齐 */
+       justify-content: space-between;
+       /* 垂直居中 */
+       align-items: center;
+   }
+   /* 设置类容容器属性 */
+   
+   .layui-form {
+       padding-top: 20px;
+   }
+   /* 设置输入框的属性 */
+   
+   .layui-input-block {
+       padding-right: 30px;
+   }
+   
+   .layui-table thead tr th,
+   tbody .td-center {
+       text-align: center;
+   }
