@@ -9,69 +9,22 @@
     <link rel="stylesheet" href="/assets/lib/layui/css/layui.css">
     <link rel="stylesheet" href="/assets/lib/cropper/cropper.min.css">
     <link rel="stylesheet" href="/assets/css/user_info.css">
-    <style>
-        .layui-card-body {
-            width: 500px;
-        }
-        
-        .row2 {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 20px;
-        }
-        
-        .cropper-box {
-            width: 350px;
-            height: 350px;
-            background-color: cyan;
-            overflow: hidden;
-        }
-        
-        .w100 {
-            width: 100px;
-            height: 100px;
-            background-color: gray;
-        }
-        
-        .w50 {
-            width: 50px;
-            height: 50px;
-            background-color: gray;
-            margin-top: 50px;
-        }
-        
-        .size {
-            font-size: 12px;
-            color: gray;
-            text-align: center;
-        }
-        
-        .row1 {
-            display: flex;
-        }
-        
-        .preview-box {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            align-items: center;
-        }
-        
-        .img-preview {
-            overflow: hidden;
-            border-radius: 50%;
-        }
-    </style>
+    <link rel="stylesheet" href="/assets/css/user_avatar.css">
 </head>
 
 <body>
     <div class="layui-card">
-        <div class="layui-card-header">跟换头像</div>
+        <!-- 头部区域 -->
+        <div class="layui-card-header">更换头像</div>
+        <!-- 内容区域 -->
         <div class="layui-card-body">
+            <!-- 图片编辑区域 -->
             <div class="row1">
+                <!-- 图片裁剪区域 -->
                 <div class="cropper-box">
                     <img src="/assets/images/sample.jpg" id="image">
                 </div>
+                <!-- 图片预览区域 -->
                 <div class="preview-box">
                     <div>
                         <div class="img-preview w100"></div>
@@ -83,8 +36,10 @@
                     </div>
                 </div>
             </div>
+            <!-- 按钮提交区域-->
             <div class="row2">
-                <input type="file" id="file" accept="image/png,image/jpeg">
+                <!-- 上传文件表单 初始化隐藏 -->
+                <input class="dis-no" type="file" id="file" accept="image/png,image/jpeg">
                 <button type="button" class="layui-btn" id="uploading">上传</button>
                 <button type="button" class="layui-btn layui-btn-danger" id="submit">确定</button>
             </div>
@@ -95,69 +50,7 @@
     <script src="/assets/lib/layui/layui.js"></script>
     <script src="/assets/lib/cropper/cropper.min.js"></script>
     <script src="/assets/js/baseAPI.js"></script>
-    <script>
-        $(function() {
-            var layer = layui.layer;
-            // 获取img的DOM元素
-            var $image = $('#image');
-            // 配置选项参数
-            const options = {
-                // 裁剪区的形状
-                aspectRatio: 1,
-                // 裁剪的图片 指定预览的区域 
-                preview: '.img-preview'
-            };
-            // 创建裁剪区域
-            $image.cropper(options);
-            //通过点击上传按钮 触发隐藏的上传文件元素
-            $('#uploading').on('click', function(e) {
-                //触发上传文件元素
-                $('#file').click()
-            });
-
-            //为文件选择框绑定change 事件 
-            $('#file').on('change', function(e) {
-                //获取用户选着的文件
-                var filelist = e.target.files;
-                // 判断是否有上传文件
-                if (filelist.length === 0) {
-                    return
-                };
-                //将上传的文件 通过URL.createObjectURL方法 转换为url地址
-                var imgURL = URL.createObjectURL(filelist[0]);
-                //销毁旧的裁剪区域 重新设置图片的路径 重新初始化裁剪区域
-                $image.cropper('destroy').attr('src', imgURL).cropper(options)
-            });
-
-            //上传裁剪的图片
-            $('#submit').on('click', function(e) {
-                //获得裁剪后的图片地址
-                // 先将裁剪区域 创建为一个100*100的画布（canvas）
-                //将创建好的画布转换为base64格式的字符串，并返回一个图片地址
-                var dataURL = $image.cropper('getCroppedCanvas', {
-                    width: 100,
-                    height: 100
-                }).toDataURL('image/png');
-                //发起请求 更新头像
-                $.ajax({
-                    method: 'post',
-                    url: '/my/update/avatar',
-                    data: {
-                        avatar: dataURL
-                    },
-                    success: function(res) {
-                        if (res.status !== 0) {
-                            return layer.msg('更换头像失败')
-                        }
-                        layer.msg('更换头像成功');
-                        //调用父页面的更新页面信息函数 从新渲染页面
-                        window.parent.getUserInfo();
-                    }
-
-                })
-            })
-        })
-    </script>
+    <script src="/assets/js/user_avatar.js"></script>
 </body>
 
 </html>
