@@ -6,10 +6,95 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>文章管理</title>
+    <link rel="stylesheet" href="/assets/lib/layui/css/layui.css">
+    <link rel="stylesheet" href="/assets/css/article/art_list.css">
 </head>
 
 <body>
-    <h1>nihao </h1>
+    <div class="layui-card">
+        <div class="layui-card-header">文章列表</div>
+        <div class="layui-card-body">
+            <!-- 筛选区 -->
+            <form class="layui-form" id="form-search" lay-filter="form-search">
+                <!-- 分类列表 -->
+                <div class="layui-form-item layui-inline">
+                    <!-- 请求数据 动态生成分类列表 -->
+                    <select name="cate_id" id="cate_id1">
+                    </select>
+                </div>
+                <!-- 状态列表 -->
+                <div class="layui-form-item layui-inline">
+                    <select name="state">
+                        <option value="">所有状态</option>
+                        <option value="已发布">已发布</option>
+                        <option value="草稿">草稿</option>
+                    </select>
+                </div>
+                <!-- 筛选按钮 -->
+                <div class="layui-form-item layui-inline">
+                    <button class="layui-btn layui-btn-sm" lay-submit>筛&nbsp;选</button>
+                </div>
+            </form>
+            <!-- 主体内容区域 -->
+            <table class="layui-table">
+                <!-- 设置列表宽度 -->
+                <colgroup>
+                    <col>
+                    <col width="17%">
+                    <col width="17%">
+                    <col width="17%">
+                    <col width="12%">
+                </colgroup>
+                <!-- 内容列表区 表头-->
+                <thead>
+                    <tr>
+                        <th>文章标题</th>
+                        <th>分&nbsp;&nbsp;类</th>
+                        <th>发布时间</th>
+                        <th>状&nbsp;&nbsp;态</th>
+                        <th>操&nbsp;&nbsp;作</th>
+                    </tr>
+                </thead>
+                <!-- 内容列表区 动态生成列表 -->
+                <tbody>
+                </tbody>
+            </table>
+            <!-- 分页区父容器  layui分页方法-->
+            <div id="test1"></div>
+        </div>
+    </div>
+
+    <!-- 分类模板 -->
+    <script type="text/html" id="tpl-cate">
+        <option value="">所有分类</option>
+        {{each data}}
+        <option value="{{$value.Id}}">{{$value.name}}</option>
+        {{/each}}
+    </script>
+
+    <!-- 主体内容列表模板 -->
+    <script type="text/html" id="tpl-table">
+        {{each data}}
+        <tr>
+            <td>{{$value.title}}</td>
+            <td>{{$value.cate_name}}</td>
+            <td>{{$value.pub_date|dataFoemat}}</td>
+            <td>{{$value.state}}</td>
+            <td class="td-center">
+                <!-- 给按钮设置自定义属性data-id 保存id值 -->
+                <button type="button" data-id="{{$value.Id}}" class="layui-btn layui-btn-normal layui-btn-xs edit">编辑</button>
+                <button type="button" data-id="{{$value.Id}}" class="layui-btn layui-btn-danger layui-btn-xs delete">删除</button>
+            </td>
+        </tr>
+        {{/each}}
+    </script>
+
+
+    <script src="/assets/lib/jquery.js"></script>
+    <script src="/assets/lib/layui/layui.js"></script>
+    <script src="/assets/js/baseAPI.js"></script>
+    <script src="/assets/lib/template-web.js"></script>
+    <script src="/assets/js/article/art_list.js"></script>
 </body>
 
 </html>

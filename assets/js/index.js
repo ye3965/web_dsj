@@ -69,4 +69,8 @@ function renderAvatar(user) {
         var text = name[0].toUpperCase(); //获取名字的第一个字符 如果是字母则转换为大写
         $('.text-avatar').html(text).show()
     }
+};
+// 更换iframe的src地址
+function genhuan(url) {
+    $('iframe').attr('src', url)
 }

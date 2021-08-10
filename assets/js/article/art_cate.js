@@ -1,108 +1,120 @@
 $(function() {
-  var layer = layui.layer
-  var form = layui.form
+    // 获取layui的layer方法
+    var layer = layui.layer;
+    // 渲染页面内容
+    initArtCateList();
+    // 获取文字分类类别 渲染页面内容
+    function initArtCateList() {
+        $.ajax({
+            method: 'get',
+            url: '/my/article/cates',
+            success: function(res) {
+                if (res.status !== 0) {
+                    return layer.msg(res.message)
+                }
+                // 调用列表模板 获得模板内容
+                var text = template('tpl-table', res);
+                // 将模板内容渲染到页面当中
+                $('#tbody').html(text);
+            }
+        })
+    };
 
-  initArtCateList()
+    // 添加信息弹窗
+    var indexAdd = null; //获取当前弹窗的index值 用于关闭弹窗
+    $('#btnAddCate').on('click', function(e) {
+        // 调用layui的弹窗方法 得到返回的弹窗index值
+        indexAdd = layer.open({
+            type: 1, //弹窗的类型
+            area: ['500px', '260px'], //弹窗的大小
+            title: '添加文字类别', //弹窗的标题
+            content: $('#dialog-add').html() //弹窗的内容 通过获取元素的html 渲染弹窗页面
+        });
+    });
+    // 添加信息弹窗的数据提交 因为是通过js添加的页面元素 所有要用boty左事件委派
+    $('body').on('submit', '#form-add', function(e) {
+        e.preventDefault(); //清空默认提交行为
+        // 发起添加信息的请求
+        $.ajax({
+            method: 'POST',
+            url: '/my/article/addcates',
+            data: $(this).serialize(), //表单内的值
+            success: function(res) {
+                if (res.status !== 0) {
+                    return layer.msg(res.message)
+                }
+                layer.msg(res.message);
+                // 请求成功重新渲染页面
+                initArtCateList();
+                // 关闭对应index的弹窗
+                layer.close(indexAdd);
+            }
+        })
+    });
+    //修改信息弹窗 edit
+    var indexEdit = null; //获取当前弹窗的index值 用于关闭弹窗
+    var form = layui.form; //获取layui的form方法
+    $('#tbody').on('click', '.edit', function() {
+        // 调用layui的弹窗方法 得到返回的弹窗index值
+        indexEdit = layer.open({
+            type: 1,
+            area: ['500px', '260px'],
+            title: '修改文字类别',
+            content: $('#dialog-edit').html(),
+        });
+        // 获取按钮的id
+        var id = $(this).attr('data-id');
+        // 获取信息的请求
+        $.ajax({
+            method: 'get',
+            url: '/my/article/cates/' + id, //将id值拼接到链接后面进行发送
+            success: function(res) {
+                if (res.status !== 0) {
+                    return layer.msg(res.message)
+                }
+                // 请求成功后 将请求回的数据 渲染到对应的表单中 layui的form方法
+                form.val('form-edit', res.data)
+            }
+        })
+    });
+    // 发起修改信息请求
+    $('body').on('submit', '#form-edit', function(e) {
+        e.preventDefault(); //阻止默认提交行为
+        // 发起修改信息的请求
+        $.ajax({
+            method: 'post',
+            url: '/my/article/updatecate',
+            data: $(this).serialize(), //将表单的数据进行发送
+            success: function(res) {
+                if (res.status !== 0) {
+                    return layer.msg(res.message)
+                }
+                layer.msg(res.message);
+                //通过index关闭当前弹窗
+                layer.close(indexEdit);
+                // 请求成功重新渲染页面数据
+                initArtCateList();
+            }
+        })
+    });
 
-  // 获取文章分类的列表
-  function initArtCateList() {
-    $.ajax({
-      method: 'GET',
-      url: '/my/article/cates',
-      success: function(res) {
-        var htmlStr = template('tpl-table', res)
-        $('tbody').html(htmlStr)
-      }
+    // 删除信息 delete
+    $('#tbody').on('click', '.delete', function() {
+        //获取按钮对应的id
+        var id = $(this).attr('data-id');
+        //发起删除请求
+        $.ajax({
+            method: 'get',
+            url: '/my/article/deletecate/' + id, //发送对应的id进行请求
+            success: function(res) {
+                if (res.status !== 0) {
+                    return layer.msg(res.message)
+                }
+                layer.msg(res.message);
+                // 请求成功重新渲染页面
+                initArtCateList();
+            }
+        })
     })
-  }
 
-  // 为添加类别按钮绑定点击事件
-  var indexAdd = null
-  $('#btnAddCate').on('click', function() {
-    indexAdd = layer.open({
-      type: 1,
-      area: ['500px', '250px'],
-      title: '添加文章分类',
-      content: $('#dialog-add').html()
-    })
-  })
-
-  // 通过代理的形式，为 form-add 表单绑定 submit 事件
-  $('body').on('submit', '#form-add', function(e) {
-    e.preventDefault()
-    $.ajax({
-      method: 'POST',
-      url: '/my/article/addcates',
-      data: $(this).serialize(),
-      success: function(res) {
-        if (res.status !== 0) {
-          return layer.msg('新增分类失败！')
-        }
-        initArtCateList()
-        layer.msg('新增分类成功！')
-        // 根据索引，关闭对应的弹出层
-        layer.close(indexAdd)
-      }
-    })
-  })
-
-  // 通过代理的形式，为 btn-edit 按钮绑定点击事件
-  var indexEdit = null
-  $('tbody').on('click', '.btn-edit', function() {
-    // 弹出一个修改文章分类信息的层
-    indexEdit = layer.open({
-      type: 1,
-      area: ['500px', '250px'],
-      title: '修改文章分类',
-      content: $('#dialog-edit').html()
-    })
-
-    var id = $(this).attr('data-id')
-    // 发起请求获取对应分类的数据
-    $.ajax({
-      method: 'GET',
-      url: '/my/article/cates/' + id,
-      success: function(res) {
-        form.val('form-edit', res.data)
-      }
-    })
-  })
-
-  // 通过代理的形式，为修改分类的表单绑定 submit 事件
-  $('body').on('submit', '#form-edit', function(e) {
-    e.preventDefault()
-    $.ajax({
-      method: 'POST',
-      url: '/my/article/updatecate',
-      data: $(this).serialize(),
-      success: function(res) {
-        if (res.status !== 0) {
-          return layer.msg('更新分类数据失败！')
-        }
-        layer.msg('更新分类数据成功！')
-        layer.close(indexEdit)
-        initArtCateList()
-      }
-    })
-  })
-
-  // 通过代理的形式，为删除按钮绑定点击事件
-  $('tbody').on('click', '.btn-delete', function() {
-    var id = $(this).attr('data-id')
-    // 提示用户是否要删除
-    layer.confirm('确认删除?', { icon: 3, title: '提示' }, function(index) {
-      $.ajax({
-        method: 'GET',
-        url: '/my/article/deletecate/' + id,
-        success: function(res) {
-          if (res.status !== 0) {
-            return layer.msg('删除分类失败！')
-          }
-          layer.msg('删除分类成功！')
-          layer.close(index)
-          initArtCateList()
-        }
-      })
-    })
-  })
 })
